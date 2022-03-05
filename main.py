@@ -7,15 +7,14 @@ class room:
     def __init__(self, icon):
         self.i = icon
 
-    def spawn(self, window, x, y, icon):
-        window.addstr(int(x), int(y), icon)
+    def spawn(self, window, x, y):
+        window.addstr(int(x), int(y), self.i)
 
 def main(window):
     start = room("s")
     connector = room("x")
     boss = room("b")
     treasure = room("t")
-    icons = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
     length = random.randint(8, 30)
     curses.noecho()
@@ -30,7 +29,7 @@ def main(window):
     x = startPosX
     y = startPosY
 
-    start.spawn(window, x, y, "s")
+    start.spawn(window, x, y)
     window.box()
     window.refresh()
 
@@ -54,12 +53,11 @@ def main(window):
                 newX = x
                 newY = (y + mult)
 
-            if window.instr(int(newY), int(newX), 1) in [icons]: # always passes
+            if window.instr(int(newX), int(newY), 1) in [b'x', b't', b's', b'b']: # always passes
                 pass
             else:
                 x = newX
                 y = newY
-                icon = random.choice(icons)
-                connector.spawn(window, x, y, icon)
+                connector.spawn(window, x, y)
 
 wrapper(main)
