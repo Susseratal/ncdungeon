@@ -7,14 +7,15 @@ class room:
     def __init__(self, icon):
         self.i = icon
 
-    def spawn(self, window, x, y):
-        window.addstr(int(x), int(y), self.i)
+    def spawn(self, window, x, y, icon):
+        window.addstr(int(x), int(y), icon)
 
 def main(window):
     start = room("s")
     connector = room("x")
     boss = room("b")
     treasure = room("t")
+    icons = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
     length = random.randint(8, 30)
     curses.noecho()
@@ -29,7 +30,7 @@ def main(window):
     x = startPosX
     y = startPosY
 
-    start.spawn(window, x, y)
+    start.spawn(window, x, y, "s")
     window.box()
     window.refresh()
 
@@ -42,24 +43,23 @@ def main(window):
         if key == "q":
             sys.exit(0)
 
-        elif key == "a": # how do I check if something is already there?
+        elif key == "a": 
             direction = random.randint(0,1)
-            mult = random.randint(0,1)
-            if mult == 0:
-                mult = -1
-            if direction == 0:
-                x = (x + mult)
-            else:
-                y = (y + mult)
+            mult = random.choice([-1, 1])
 
-            attrs = window.inch(int(y), int(x))
-            ch = chr(attrs & 255)
-            isbold = bool(attrs & curses.A_BOLD)
-            if isbold: # this just locks everything out
-                pass
-            # if char in ["x", "b", "t", "s"]: # this seems to do a whole lot of nothing
-                # pass
+            if direction == 0:
+                newX = (x + mult)
+                newY = y
             else:
-                connector.spawn(window, x, y)
+                newX = x
+                newY = (y + mult)
+
+            if window.instr(int(newY), int(newX), 1) in [icons]: # always passes
+                pass
+            else:
+                x = newX
+                y = newY
+                icon = random.choice(icons)
+                connector.spawn(window, x, y, icon)
 
 wrapper(main)
