@@ -14,9 +14,11 @@ def main(window):
     start = room("s")
     connector = room("x")
     boss = room("b")
+    miniboss = room("m")
     treasure = room("t")
+    specialRooms = [boss, treasure, treasure, miniboss]
 
-    length = random.randint(8, 30)
+    length = random.randint(3, 20)
     curses.noecho()
     curses.curs_set(0)
     window.keypad(1)
@@ -43,21 +45,37 @@ def main(window):
             sys.exit(0)
 
         elif key == "a": 
-            direction = random.randint(0,1)
-            mult = random.choice([-1, 1])
+            while True:
+                direction = random.randint(0,1)
+                mult = random.choice([-1, 1])
+                if length <= 0: # I guess it just never hits this or something lmao
+                    choice = random.choice(specialRooms)
+                else:
+                    choice = connector
 
-            if direction == 0:
-                newX = (x + mult)
-                newY = y
-            else:
-                newX = x
-                newY = (y + mult)
+                if direction == 0:
+                    newX = (x + mult)
+                    newY = y
+                else:
+                    newX = x
+                    newY = (y + mult)
 
-            if window.instr(int(newX), int(newY), 1) in [b'x', b't', b's', b'b']: # always passes
-                pass
-            else:
-                x = newX
-                y = newY
-                connector.spawn(window, x, y)
+                if window.instr(int(newX), int(newY), 1) in [b'x', b't', b's', b'b']: 
+                    continue # this will lock here if it works itself into a corner
+                    # Also it can get to the edge of the screen and then it get's stumped
+                else:
+                    x = newX
+                    y = newY
+                    choice.spawn(window, x, y)
+                    break
+                    length -= 1
+
+        elif key == "r":
+            x = startPosX
+            y = startPosY
+            window.clear()
+            window.box()
+            start.spawn(window, x, y)
+            window.refresh
 
 wrapper(main)
