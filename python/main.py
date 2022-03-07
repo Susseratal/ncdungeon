@@ -48,7 +48,7 @@ def main(window):
             while True:
                 direction = random.randint(0,1)
                 mult = random.choice([-1, 1])
-                if length <= 0: # I guess it just never hits this or something lmao
+                if length <= 0: 
                     choice = random.choice(specialRooms)
                 else:
                     choice = connector
@@ -62,13 +62,13 @@ def main(window):
 
                 if window.instr(int(newX), int(newY), 1) in [b'x', b't', b's', b'b']: 
                     continue # this will lock here if it works itself into a corner
-                    # Also it can get to the edge of the screen and then it get's stumped
+                    # Also it can get to the edge of the screen and then it gets stumped
                 else:
                     x = newX
                     y = newY
                     choice.spawn(window, x, y)
-                    break
                     length -= 1
+                    break
 
         elif key == "r":
             x = startPosX
